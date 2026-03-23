@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>📊 Check Result</h2>
+
+<div class="container">
+  <input id="prn" placeholder="Enter PRN">
+  <button onclick="getResult()">Get Result</button>
+
+  <div id="result"></div>
+</div>
+
+<script>
+async function getResult() {
+  const prn = document.getElementById("prn").value;
+
+  document.getElementById("result").innerText = "Loading...";
+
+  const res = await fetch("/get-result", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ prn })
+  });
+
+  const data = await res.json();
+
+  if(data.message){
+    document.getElementById("result").innerText = "No data found";
+  } else {
+    let total = Object.values(data.marks).reduce((a,b)=>a+b,0);
+    let percent = (total / 3).toFixed(2);
+
+    let grade = percent >= 75 ? "A" : percent >= 50 ? "B" : "C";
+    let status = percent >= 35 ? "Pass" : "Fail";
+
+    let message = percent >= 75 ? "Excellent 🎉" : percent >= 50 ? "Good 👍" : "Need Improvement ⚠️";
+
+    let color = status === "Pass" ? "#d4edda" : "#f8d7da";
+
+    document.getElementById("result").innerHTML = `
+      <div class="card" style="background:${color}">
+        <h3>${data.name}</h3>
+        <p><b>PRN:</b> ${data.prn}</p>
+        <hr>
+        <p>Math: ${data.marks.math}</p>
+        <p>Science: ${data.marks.science}</p>
+        <p>English: ${data.marks.english}</p>
+        <hr>
+        <p><b>Total:</b> ${total}</p>
+        <p><b>Percentage:</b> ${percent}%</p>
+
+        <div style="background:#ddd; border-radius:10px;">
+          <div style="width:${percent}%; background:green; color:white; padding:5px; border-radius:10px;">
+            ${percent}%
+          </div>
+        </div>
+
+        <p><b>Grade:</b> ${grade}</p>
+        <p><b>Status:</b> ${status}</p>
+        <p><b>Remark:</b> ${message}</p>
+
+        <button onclick="window.print()">🖨 Print Result</button>
+      </div>
+    `;
+  }
+}
+</script>
+
+</body>
+</html>
