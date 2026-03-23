@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>🛠 Admin Panel</h2>
+
+<div class="container">
+  <input id="adminPass" placeholder="Enter Admin Password">
+  <button onclick="checkLogin()">Login</button>
+
+  <div id="adminPanel" style="display:none;">
+    <input id="name" placeholder="Name"><br>
+    <input id="prn" placeholder="PRN"><br>
+    <input id="math" placeholder="Math"><br>
+    <input id="science" placeholder="Science"><br>
+    <input id="english" placeholder="English"><br>
+
+    <button onclick="addResult()">Add Result</button>
+  </div>
+</div>
+
+<script>
+function checkLogin() {
+  const pass = document.getElementById("adminPass").value;
+
+  if(pass === "admin123"){
+    document.getElementById("adminPanel").style.display = "block";
+  } else {
+    alert("Wrong password");
+  }
+}
+
+async function addResult() {
+  const data = {
+    name: document.getElementById("name").value,
+    prn: document.getElementById("prn").value,
+    marks: {
+      math: Number(document.getElementById("math").value),
+      science: Number(document.getElementById("science").value),
+      english: Number(document.getElementById("english").value)
+    }
+  };
+
+  await fetch("/add-result", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(data)
+  });
+
+  alert("Result Added!");
+}
+</script>
+
+</body>
+</html>
