@@ -1,0 +1,11 @@
+[
+  {
+    "name": "Tejas",
+    "prn": "01",
+    "marks": {
+      "math": 89,
+      "science": 98,
+      "english": 89
+    }
+  }
+]
